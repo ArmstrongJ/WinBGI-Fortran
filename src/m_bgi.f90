@@ -526,6 +526,86 @@ implicit none
             integer(kind=c_int)::textwidth
         end function textwidth
 
+        ! RGB COLOR Function
+        function rgbcolor(r, g, b) bind(c, name="COLOR")
+        use iso_c_binding, only: c_int
+            integer(kind=c_int)::rgbcolor
+            integer(kind=c_int), value::r, g, b
+        end function rgbcolor
+        
+        function converttorgb(v) bind(c)
+        use iso_c_binding, only: c_int
+            integer(kind=c_int)::converttorgb
+            integer(kind=c_int), value::v
+        end function converttorgb
+        
     end interface
     
+    contains
+    
+    function isbgicolor(v)
+    implicit none
+        logical::isbgicolor
+        integer, intent(in)::v
+    
+        isbgicolor = ((v .LT. 16) .AND. (v .GE. 0))
+    
+    end function isbgicolor
+    
+    function isrgbcolor(v)
+    implicit none
+        logical::isrgbcolor
+        integer, intent(in)::v
+        integer(kind=4)::bmask 
+    
+        data bmask / Z'03000000' /
+    
+        isrgbcolor = (IAND(v, bmask) .EQ. bmask)
+    
+    end function isrgbcolor
+    
+    function redvalue(v)
+    implicit none
+    
+        integer::redvalue
+        integer::v
+        
+        integer(kind=4)::bmask 
+
+        if(isrgbcolor(v)) then
+            redvalue = ibits(converttorgb(v), 0, 8)
+        else
+            redvalue = 0
+        end if
+    
+    end function redvalue
+    
+    function greenvalue(v)
+    implicit none
+    
+        integer::greenvalue
+        integer::v
+    
+        if(isrgbcolor(v)) then
+            greenvalue = ibits(converttorgb(v), 8, 8)
+        else
+            greenvalue = 0
+        end if
+    
+    end function greenvalue
+    
+    function bluevalue(v)
+    implicit none
+    
+        integer::bluevalue
+        integer::v
+    
+        if(isrgbcolor(v)) then
+            bluevalue = ibits(converttorgb(v), 16, 8)
+        else
+            bluevalue = 0
+        end if
+    
+    end function bluevalue
+
 end module bgi
