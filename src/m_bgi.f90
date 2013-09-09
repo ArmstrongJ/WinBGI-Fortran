@@ -211,14 +211,14 @@ implicit none
             character(kind=c_char), dimension(*) :: pathtodriver
         end subroutine initgraph 
 
-        function initwindow (width, height, title, left, top, dbflag, closeflag) bind(c)
+        function c_initwindow (width, height, title, left, top, dbflag, closeflag) bind(c, name="initwindow")
         use iso_c_binding, only: c_int, c_char, c_bool
             integer(kind=c_int), value::width, height
             character(kind=c_char), dimension(*) :: title
             integer(kind=c_int), value::left, top
-            logical(kind=c_bool), intent(in)::dbflag, closeflag
-            integer(kind=c_int)::initwindow
-        end function initwindow
+            logical(kind=c_bool), value::dbflag, closeflag
+            integer(kind=c_int)::c_initwindow
+        end function c_initwindow
 
         function installuserdriver (dname, detect)  bind(c)
         use iso_c_binding, only: c_int, c_char, c_funptr
@@ -542,6 +542,56 @@ implicit none
     end interface
     
     contains
+    
+    function initwindow (width, height, title, left, top, dbflag, closeflag) result(window_id)
+    use iso_c_binding, only: C_NULL_CHAR, C_BOOL
+    implicit none
+    
+        integer, intent(in)::width, height
+        character(*), optional :: title
+        integer, intent(in), optional::left, top
+        logical, intent(in), optional::dbflag, closeflag
+        integer::window_id
+        
+        integer::int_left = 0, int_top = 0
+        logical::int_dbflag = .FALSE., int_closeflag = .TRUE.
+        integer, parameter::max_title = 256
+        character(max_title) :: int_title
+
+        if(present(left)) then
+            int_left = left
+        end if
+        
+        if(present(top)) then
+            int_top = top
+        end if
+        
+        if(present(dbflag)) then
+            int_dbflag = dbflag
+        end if
+        
+        if(present(closeflag)) then
+            int_closeflag = closeflag
+        end if
+        
+        if(present(title)) then
+            if(len_trim(title) .GE. max_title) then
+                int_title = title(1:max_title-1)//C_NULL_CHAR
+            else
+                int_title(1:len_trim(title)) = trim(title)
+                int_title(len_trim(title)+1:len_trim(title)+1) = C_NULL_CHAR
+            end if
+        else
+            int_title = "WinBGI-Fortran"//C_NULL_CHAR
+        end if
+
+        window_id = c_initwindow(width, height, int_title, int_left, &
+                                 int_top, logical(int_dbflag, C_BOOL), &
+                                 logical(int_closeflag, C_BOOL))
+    
+        call setcurrentwindow(window_id)
+    
+    end function initwindow
     
     function isbgicolor(v)
     implicit none
