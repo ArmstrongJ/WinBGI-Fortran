@@ -42,11 +42,13 @@ minimally used.
 Documentation
 -------------
 
-Forthcoming...
-
 For now, you can consult the original C documentation:
 
 http://winbgim.codecutter.org/V6_0/doc/index.html
+
+The list of supported functions is maintained at:
+
+https://github.com/ArmstrongJ/WinBGI-Fortran/wiki/Supported-Functions
 
 Legal
 -----
