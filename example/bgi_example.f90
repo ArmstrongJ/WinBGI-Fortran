@@ -6,6 +6,7 @@ integer::gdriver, gmode
 integer::midx, midy, i, ignore
 
 integer::w
+character(len=40)::drivername
 
     ! Initgraph will use the default driver at 640x480
     ! gdriver = DETECT
@@ -22,9 +23,15 @@ integer::w
         Print *, "Graphics ok!"
     end if
     
+    call getdrivername(drivername)
+    Print *, "My driver is called "//trim(drivername)
+    
     midx = getmaxx() / 2;
     midy = getmaxy() / 2;
 
+    ! Added for fun
+    call arc(midx, midy, 0, 180, 150)
+    
     do i = EMPTY_FILL, USER_FILL-1
 
         ! set the fill style

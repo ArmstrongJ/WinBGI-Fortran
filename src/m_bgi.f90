@@ -17,83 +17,19 @@
 ! <http://www.gnu.org/licenses/>.
 
 module bgi
+use bgi_constants
+use bgi_types
 use iso_c_binding
 implicit none
 
-    integer(kind=c_int), parameter:: KEY_HOME = 71
-    integer(kind=c_int), parameter:: KEY_UP =   72
-    integer(kind=c_int), parameter:: KEY_PGUP = 73
-    integer(kind=c_int), parameter:: KEY_LEFT = 75
-    integer(kind=c_int), parameter:: KEY_CENTER = 76
-    integer(kind=c_int), parameter:: KEY_RIGHT = 77
-    integer(kind=c_int), parameter:: KEY_END =  79
-    integer(kind=c_int), parameter:: KEY_DOWN = 80
-    integer(kind=c_int), parameter:: KEY_PGDN = 81
-    integer(kind=c_int), parameter:: KEY_INSERT = 82
-    integer(kind=c_int), parameter:: KEY_DELETE = 83
-    integer(kind=c_int), parameter:: KEY_F1 =   59
-    integer(kind=c_int), parameter:: KEY_F2 =   60
-    integer(kind=c_int), parameter:: KEY_F3 =   61
-    integer(kind=c_int), parameter:: KEY_F4 =   62
-    integer(kind=c_int), parameter:: KEY_F5 =   63
-    integer(kind=c_int), parameter:: KEY_F6 =   64
-    integer(kind=c_int), parameter:: KEY_F7 =   65
-    integer(kind=c_int), parameter:: KEY_F8 =   66
-    integer(kind=c_int), parameter:: KEY_F9 =   67
+    ! NOTE: These C interfaces should not be accessible outside the
+    !       module.  However, GNU Fortran will produce a warning here.
+    !       See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49111 for
+    !       more information.
+    private :: c_initwindow, getdefaultpalette_c, getdrivername_c, &
+               getfillpattern_c, getmodename_c, strlen, &
+               c_f_stringconvert
 
-    ! Line thickness settings
-    integer(kind=c_int), parameter:: NORM_WIDTH = 1
-    integer(kind=c_int), parameter:: THICK_WIDTH = 3
-
-    ! Character Size and Direction
-    integer(kind=c_int), parameter:: USER_CHAR_SIZE = 0
-    integer(kind=c_int), parameter:: HORIZ_DIR = 0
-    integer(kind=c_int), parameter:: VERT_DIR = 1
-
-
-    ! Constants for closegraph
-    integer(kind=c_int), parameter:: CURRENT_WINDOW = -1
-    integer(kind=c_int), parameter:: ALL_WINDOWS = -2
-    integer(kind=c_int), parameter:: NO_CURRENT_WINDOW = -3
-
-    ! The standard Borland 16 colors
-    integer(kind=c_int), parameter:: MAXCOLORS = 15
-    
-    ! No mouse click
-    integer(kind=c_int), parameter:: NO_CLICK = -1
-    
-    enum, bind(c) ! fill styles
-        enumerator :: EMPTY_FILL, SOLID_FILL, LINE_FILL, LTSLASH_FILL, &
-                      SLASH_FILL, BKSLASH_FILL, LTBKSLASH_FILL, HATCH_FILL, & 
-                      XHATCH_FILL, INTERLEAVE_FILL, WIDE_DOT_FILL, &
-                      CLOSE_DOT_FILL, USER_FILL
-    end enum
-
-    enum, bind(c)
-        enumerator :: DETECT, CGA, MCGA, EGA, EGA64, EGAMONO, IBM8514, &
-                      HERCMONO, ATT400, VGA, PC3270
-    end enum
-
-    enum, bind(c)
-        enumerator :: BLACK, BLUE, GREEN, CYAN, RED, MAGENTA, BROWN, &
-                      LIGHTGRAY, DARKGRAY, LIGHTBLUE, LIGHTGREEN, &
-                      LIGHTCYAN, LIGHTRED, LIGHTMAGENTA, YELLOW, WHITE
-    end enum
-    
-    enum, bind(c)
-        enumerator :: SOLID_LINE, DOTTED_LINE, CENTER_LINE, DASHED_LINE, &
-                      USERBIT_LINE
-    end enum
-    
-    enum, bind(c) 
-        enumerator :: grInvalidVersion = -18, grInvalidDeviceNum = -15, &
-                      grInvalidFontNum, grInvalidFont, grIOerror, &
-                      grError, grInvalidMode, grNoFontMem, grFontNotFound, &
-                      grNoFloodMem, grNoScanMem, grNoLoadMem, &
-                      grInvalidDriver, grFileNotFound, grNotDetected, &
-                      grNoInitGraph, grOk
-    end enum
-    
     interface
         subroutine arc(x, y, stangle, endangle, radius) bind(c)
         use iso_c_binding, only: c_int
@@ -270,7 +206,10 @@ implicit none
             integer(kind=c_int)::getactivepage
         end function getactivepage
 
-        !void getarccoords (struct arccoordstype *arccoords);
+        subroutine getarccoords (arccoords) bind(c)
+        use bgi_types, only: arccoordstype
+            type(arccoordstype) :: arccoords
+        end subroutine getarccoords
 
         subroutine getaspectratio (xasp, yasp) bind(c)
         use iso_c_binding, only: c_int
@@ -297,19 +236,31 @@ implicit none
             integer(kind=c_int)::getcurrentwindow
         end function getcurrentwindow
 
-        ! struct palettetype* getdefaultpalette (void);
-
+        function getdefaultpalette_c() bind(c, name="getdefaultpalette")
+        use iso_c_binding, only: c_ptr
+            type(c_ptr) :: getdefaultpalette_c
+        end function getdefaultpalette_c
+        
         function getdisplaycolor (color) bind(c)
         use iso_c_binding, only: c_int
             integer(kind=c_int), value::color
             integer(kind=c_int)::getdisplaycolor
         end function getdisplaycolor
 
-        !char* getdrivername (void);
-
-        !void getfillpattern (char *pattern); 
-
-        !void getfillsettings (struct fillsettingstype *fillinfo);
+        function getdrivername_c () bind(c, name="getdrivername")
+        use iso_c_binding, only: c_ptr
+            type(c_ptr) :: getdrivername_c
+        endfunction getdrivername_c
+        
+        subroutine getfillpattern_c(cstr) bind(c, name="getfillpattern")
+        use iso_c_binding, only: c_ptr
+            type(c_ptr) :: cstr
+        end subroutine getfillpattern_c
+        
+        subroutine getfillsettings(fillinfo) bind(c)
+        use bgi_types, only: fillsettingstype
+            type(fillsettingstype) :: fillinfo
+        end subroutine getfillsettings
 
         function getgraphmode () bind(c)
         use iso_c_binding, only: c_int
@@ -322,8 +273,11 @@ implicit none
             type(c_ptr)::bitmap
         end subroutine getimage
         
-        !void getlinesettings (struct linesettingstype *lineinfo);
-
+        subroutine getlinesettings(lineinfo) bind(c)
+        use bgi_types, only: linesettingstype
+            type(linesettingstype)::lineinfo
+        end subroutine getlinesettings
+        
         function getmaxcolor () bind(c)
         use iso_c_binding, only: c_int
             integer(kind=c_int)::getmaxcolor
@@ -354,7 +308,11 @@ implicit none
             integer(kind=c_int)::getmaxy
         end function getmaxy
         
-        !char* getmodename (int mode_number);
+        function getmodename_c(mode_number) bind(c, name="getmodename")
+        use iso_c_binding, only: c_int, c_ptr
+            type(c_ptr)::getmodename_c
+            integer(kind=c_int), value::mode_number
+        end function getmodename_c
 
         subroutine getmoderange (graphdriver, lomode, himode) bind(c)
         use iso_c_binding, only: c_int
@@ -368,8 +326,11 @@ implicit none
             integer(kind=c_int), intent(inout)::x, y
         end subroutine getmouseclick
 
-        !void getpalette (struct palettetype *palette);
-                
+        subroutine getpalette(palette) bind(c)
+        use bgi_types, only: palettetype
+            type(palettetype)::palette
+        end subroutine getpalette
+
         function getpalettesize () bind(c)
         use iso_c_binding, only: c_int
             integer(kind=c_int)::getpalettesize
@@ -381,9 +342,15 @@ implicit none
             integer(kind=c_int)::getpixel
         end function getpixel
         
-        !void gettextsettings (struct textsettingstype *texttypeinfo);
-
-        !void getviewsettings (struct viewporttype *viewport);
+        subroutine gettextsettings(texttypeinfo) bind(c)
+        use bgi_types, only: textsettingstype
+            type(textsettingstype)::texttypeinfo
+        end subroutine gettextsettings
+        
+        subroutine getviewsettings(viewport) bind(c)
+        use bgi_types, only: viewporttype
+            type(viewporttype)::viewport
+        end subroutine getviewsettings
 
         function getvisualpage () bind(c)
         use iso_c_binding, only: c_int
@@ -415,7 +382,10 @@ implicit none
             integer(kind=c_int), value::page
         end subroutine setactivepage
 
-        !void setallpalette (struct palettetype *palette); 
+        subroutine setallpalette(palette) bind(c)
+        use bgi_types, only: palettetype
+            type(palettetype)::palette
+        end subroutine setallpalette
 
         subroutine setaspectratio(xasp, yasp) bind(c)
         use iso_c_binding, only: c_int
@@ -454,7 +424,11 @@ implicit none
             integer(kind=c_int), value::pattern, color
         end subroutine setfillstyle
 
-        !unsigned setgraphbufsize (unsigned bufsize); 
+        function setgraphbufsize(bufsize) bind(c) ! uses "unsigned"
+        use iso_c_binding, only: c_int
+            integer(kind=c_int), value::bufsize
+            integer(kind=c_int)::setgraphbufsize
+        end function setgraphbufsize
 
         subroutine setgraphmode(mode) bind(c)
         use iso_c_binding, only: c_int
@@ -462,6 +436,10 @@ implicit none
         end subroutine setgraphmode
 
         !void setlinestyle (int linestyle, unsigned upattern, int thickness);
+        subroutine setlinestyle(linestyle, upattern, thickness) bind(c)
+        use iso_c_binding, only: c_int
+            integer(kind=c_int), value::linestyle, upattern, thickness
+        end subroutine setlinestyle
 
         subroutine setpalette(colornum, color) bind(c)
         use iso_c_binding, only: c_int
@@ -539,9 +517,34 @@ implicit none
             integer(kind=c_int), value::v
         end function converttorgb
         
+        function strlen(str) bind(c)
+        use iso_c_binding, only: c_ptr, c_int
+            integer(kind=c_int)::strlen
+            type(c_ptr)::str
+        end function strlen
+        
     end interface
     
     contains
+    
+    subroutine c_f_stringconvert(cstring, str)
+    use iso_c_binding, only: c_ptr, c_char, c_int
+    implicit none
+    
+        type(c_ptr)::cstring
+        character(len=*)::str
+        
+        character(kind=c_char), dimension(:), pointer::farray
+        integer::i
+        
+        call c_f_pointer(cstring, farray, [strlen(cstring)])
+        
+        str = repeat(' ', len(str))
+        do i = 1, min(len(str), strlen(cstring))
+            str(i:i) = farray(i)
+        end do
+
+    end subroutine c_f_stringconvert
     
     function initwindow (width, height, title, left, top, dbflag, closeflag) result(window_id)
     use iso_c_binding, only: C_NULL_CHAR, C_BOOL
@@ -619,8 +622,6 @@ implicit none
     
         integer::redvalue
         integer::v
-        
-        integer(kind=4)::bmask 
 
         if(isrgbcolor(v)) then
             redvalue = ibits(converttorgb(v), 0, 8)
@@ -657,5 +658,42 @@ implicit none
         end if
     
     end function bluevalue
+    
+    function getdefaultpalette() result(fptr)
+    use iso_c_binding, only: c_ptr
+    implicit none
+    
+        type(palettetype), pointer::fptr
+        type(c_ptr)::cptr
+        
+        cptr = getdefaultpalette_c()
+        call c_f_pointer(cptr, fptr)
+        
+    end function getdefaultpalette
+
+    subroutine getdrivername(str)
+    implicit none
+    
+        character(*)::str
+        call c_f_stringconvert(getdrivername_c(), str)
+        
+    end subroutine getdrivername
+
+    subroutine getmodename(mode_number, str)
+    implicit none
+    
+        integer, intent(in)::mode_number
+        character(*)::str
+        call c_f_stringconvert(getmodename_c(mode_number), str)
+        
+    end subroutine getmodename
+
+    subroutine getfillpattern(pattern)
+    implicit none
+    
+        character, dimension(8), target::pattern
+        call getfillpattern_c(c_loc(pattern))
+    
+    end subroutine getfillpattern
 
 end module bgi
