@@ -28,7 +28,7 @@ implicit none
     !       more information.
     private :: c_initwindow, getdefaultpalette_c, getdrivername_c, &
                getfillpattern_c, getmodename_c, strlen, &
-               c_f_stringconvert
+               c_f_stringconvert, c_initgraph, c_closegraph
 
     interface
         subroutine arc(x, y, stangle, endangle, radius) bind(c)
@@ -118,10 +118,10 @@ implicit none
         subroutine clearviewport () bind(c)
         end subroutine clearviewport
         
-        subroutine closegraph (window) bind(c)
+        subroutine c_closegraph (window) bind(c, name="closegraph")
         use iso_c_binding, only: c_int
             integer(kind=c_int), value::window
-        end subroutine closegraph
+        end subroutine c_closegraph
 
         subroutine delay (millisec) bind(c)
         use iso_c_binding, only: c_int
@@ -141,11 +141,11 @@ implicit none
             integer(kind=c_int)::graphresult
         end function graphresult
 
-        subroutine initgraph (graphdriver, graphmode, pathtodriver) bind(c)
+        subroutine c_initgraph (graphdriver, graphmode, pathtodriver) bind(c, name="initgraph")
         use iso_c_binding, only: c_int, c_char
             integer(kind=c_int), intent(inout)::graphdriver, graphmode
             character(kind=c_char), dimension(*) :: pathtodriver
-        end subroutine initgraph 
+        end subroutine c_initgraph 
 
         function c_initwindow (width, height, title, left, top, dbflag, closeflag) bind(c, name="initwindow")
         use iso_c_binding, only: c_int, c_char, c_bool
@@ -595,6 +595,41 @@ implicit none
         call setcurrentwindow(window_id)
     
     end function initwindow
+    
+    subroutine initgraph(graphdriver, graphmode, pathtodriver)
+    implicit none
+        integer, intent(inout)::graphdriver, graphmode
+        character(*), optional::pathtodriver
+        
+        integer, parameter::max_path = 256
+        character(max_path)::int_path
+        
+        if(present(pathtodriver)) then
+            if(len_trim(pathtodriver) .GE. max_path) then
+                int_path = pathtodriver(1:max_path-1)//C_NULL_CHAR
+            else
+                int_path(1:len_trim(pathtodriver)) = trim(pathtodriver)
+                int_path(len_trim(pathtodriver)+1:len_trim(pathtodriver)+1) = C_NULL_CHAR
+            end if
+        else
+            int_path = "."//C_NULL_CHAR
+        end if
+        
+        call c_initgraph(graphdriver, graphmode, int_path)
+        
+    end subroutine initgraph
+    
+    subroutine closegraph(windows)
+    implicit none
+        integer, intent(in), optional::windows
+        
+        if(present(windows)) then
+            call c_closegraph(windows)
+        else
+            call c_closegraph(ALL_WINDOWS)
+        end if
+        
+    end subroutine closegraph
     
     function isbgicolor(v)
     implicit none
