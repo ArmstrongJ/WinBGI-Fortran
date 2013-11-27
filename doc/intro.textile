@@ -1,0 +1,10 @@
+h1. Introduction
+
+This library provides a simple method for drawing primitive graphics on Microsoft Windows and compatible operating systems.  The available functions are Fortran wrappers for the WinBGI library.  The WinBGI library itself is a modern implementation of the Borland Graphics Interface.
+
+The Borland Graphics Interface, often referred to as BGI, was a simple graphics library included with many Borland compiler products for MS-DOS.  It has long since been discontinued.  The modern WinBGI implementation basically reimplements all of BGI's graphics functions, but the output is displayed in a window on modern versions of Microsoft Windows.
+
+h2. The Fortran Interface
+
+Much of the Fortran interface that this library implements is simply a thin wrapper around WinBGI's functions.  This library is packaged cleanly into a Fortran 90 module, named **bgi**, that can be *use*d in any Fortran program or subprogram unit.  The implementation of these functions should effectively conceal any of the C-like syntax, providing Fortran-friendly functions for everything.
+

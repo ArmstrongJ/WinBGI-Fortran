@@ -1,0 +1,88 @@
+h1. Window Management
+
+The following functions provide routines for managing the window, including opening the graphics device,
+clearing the viewport, and closing the graphics window.
+
+h2. initwindow
+
+*function* **initwindow** (width, height, title, left, top, dbflag, closeflag)
+
+h3. Description
+
+Initializes and opens a window for graphics output.  This routine is the recommended method for opening a graphics output device.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|width|integer|Width of the window|
+|height|integer|Height of the window|
+|title|character(*)|(optional) Title to display in the titlebar|
+|left|integer|(optional) Horizontal screen position of the window|
+|top|integer|(optional) Vertical screen position of the window|
+|dbflag|logical|(optional) Enable double-buffering|
+|closeflag|logical|(optional) Kill program on window close|
+
+h3. Return Value
+
+**integer** 
+
+Unique identifier of the opened window
+
+h2. initgraph
+
+*subroutine* **initgraph** (graphdriver, graphmode, pathtodriver)
+
+h3. Description
+
+Initializes and opens a window for graphics output using the specified driver in the specified mode.  The *graphdriver* must be one of the defined constants:
+
+|DETECT|
+|CGA|
+|MCGA|
+|EGA|
+|EGA64|
+|EGAMONO|
+|IBM8514|
+|HERCMONO|
+|ATT400|
+|VGA|
+|PC3270|
+
+With this interface on Windows, the driver constants are mostly used to determine window size.  Users are encouraged to use <a href="#initwindow">**initwindow**</a> instead.
+
+The *graphmode* parameter is present for specifying palletes.  Passing 0 is sufficient.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|graphdriver|integer|The driver|
+|graphmode|integer|Height of the window|
+|pathtodriver|character(*)|(optional) Path to driver files (not applicable, compatability only)|
+
+h3. Return Value
+
+Upon success, the value of *graphdriver* will be *grOk*.  The following error codes can be returned in this parameter:
+
+|*graphdriver* Value|Description|
+|grOk|Successfully initialized|
+|grNotDetected|Could not detect the specified driver|
+|grInvalidDriver|The value of *graphdriver* was invalid|
+|grNoLoadMem|Insufficient memory to load driver|
+
+h2. closegraph
+
+*subroutine* **closegraph** (window_id)
+
+h3. Description
+
+Closes the specified graphics window or, optionally, all windows.  If *window_id* is not included, this call will close all windows.  The *window_id* parameter should be the window's id as referred to by <a href="#initwindow">**initwindow**</a> or one of the following constants:
+
+|Constant|Description|
+|ALL_WINDOWS|All open graphics windows (default)|
+|CURRENT_WINDOW|The current window|
+|NO_CURRENT_WINDOW|All windows except the current window|
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|window_id|integer|(optional) The id of the window to close or, optionally, a constant described above|
