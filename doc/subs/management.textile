@@ -1,4 +1,4 @@
-h1. Window Management
+h1. Graphics Management
 
 The following functions provide routines for managing the window, including opening the graphics device,
 clearing the viewport, and closing the graphics window.
@@ -55,8 +55,8 @@ The *graphmode* parameter is present for specifying palletes.  Passing 0 is suff
 h3. Parameters
 
 |Parameter|Type|Description|
-|graphdriver|integer|The driver|
-|graphmode|integer|Height of the window|
+|graphdriver|integer|The driver to request|
+|graphmode|integer|The mode of the specific driver in which to start|
 |pathtodriver|character(*)|(optional) Path to driver files (not applicable, compatability only)|
 
 h3. Return Value
@@ -86,3 +86,265 @@ h3. Parameters
 
 |Parameter|Type|Description|
 |window_id|integer|(optional) The id of the window to close or, optionally, a constant described above|
+
+h2. detectgraph
+
+*subroutine* **detectgraph** (graphdriver, graphmode)
+
+h3. Description
+
+Originally meant to return the best available graphics driver, this function will always return **VGA** in the *graphdriver* parameter and **VGAHI** in the *graphmode* parameter.  It is present for compatability only.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|graphdriver|integer|The best available driver, always being **VGA** |
+|graphmode|integer|The mode of the driver, always being **VGAHI** |
+
+h2. graphdefaults
+
+*subroutine* **graphdefaults** ( )
+
+h3. Description
+
+Return the graphics window to its default settings, including:
+
+* sets the viewport to the entire window
+* moves the current position to (0,0)
+* sets the default palette colors, background color, and drawing color
+* sets the default fill style and pattern
+* sets the default text font and justification
+
+h2. graphresult
+
+*function* **graphresult** ( )
+
+h3. Description
+
+Returns the status of the last graphics operation.
+
+h3. Return Value
+
+**integer** 
+
+Ths return code will always be one of the following values:
+
+|Constant|Description|
+|grOk|No error|
+|grNoInitGraph|(BGI) graphics not installed (use initgraph)|
+|grNotDetected|Graphics hardware not detected|
+|grFileNotFound|Device driver file not found|
+|grInvalidDriver|Invalid device driver file|
+|grNoLoadMem|Not enough memory to load driver|
+|grNoScanMem|Out of memory in scan fill|
+|grNoFloodMem|Out of memory in flood fill|
+|grFontNotFound|Font file not found|
+|grNoFontMem|Not enough memory to load font|
+|grInvalidMode|Invalid graphics mode for selected driver|
+|grError|Graphics error|
+|grIOerror|Graphics I/O error|
+|grInvalidFont|Invalid font file|
+|grInvalidFontNum|Invalid font number|
+|grInvalidDeviceNum|Invalid device number|
+|grInvalidVersion|Invalid version number|
+
+h2. setcurrentwindow
+
+*subroutine* **setcurrentwindow** (window_id)
+
+h3. Description
+
+Selects the window of the specified id to be the current window.  All subsequent graphics operations will be applied to the specified window until it is either closed or another window becomes the current window.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|window_id|integer|The window id|
+
+h2. swapbuffers
+
+*subroutine* **swapbuffers** ( )
+
+h3. Description
+
+For double-buffered graphics, this routine will swap the currently visible graphics with the current in-memory buffer.  It effectively swaps the visual and active pages.
+
+h2. getactivepage
+
+*function* **getactivepage** ( )
+
+h3. Description
+
+Returns the page number of the graphics device where drawing is currently taking place.  If double buffering is enabled, this will not necessarily be the visible page.
+
+h3. Return Value
+
+*integer*
+
+The page that is currently being drawn.
+
+h2. getvisualpage
+
+*function* **getvisualpage** ( )
+
+h3. Description
+
+Returns the page number of the graphics device that is currently displayed on screen.  If double buffering is enabled, this will not necessarily be the active page.
+
+h3. Return Value
+
+*integer*
+
+The page that is currently being shown.
+
+h2. setactivepage
+
+*subroutine* **setactivepage** (page)
+
+h3. Description
+
+Sets the specified page, normally a number returned by either <a href="#getactivepage">**getactivepage**</a> or <a href="#getvisualpage">**getvisualpage**</a>, to the active page for drawing.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|page|integer|The page to act as the active page for drawing|
+
+h2. setvisualpage
+
+*subroutine* **setvisualpage** (page)
+
+h3. Description
+
+Sets the specified page, normally a number returned by either <a href="#getactivepage">**getactivepage**</a> or <a href="#getvisualpage">**getvisualpage**</a>, to the page displayed on screen.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|page|integer|The page to act as the visual page for display|
+
+h2. getaspectratio
+
+*subroutine* **getaspectratio** (xaspect, yaspect)
+
+h3. Description
+
+Retrieves the aspect ratio for the current window.  The values are returned via the two parameters.  The *yaspect* parameter will always be normalized to 10,000, with *xaspect* scaled accordingly.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|xaspect|integer|The screen width of one pixel on the device|
+|yaspect|integer|The screen height of one pixel on the device|
+
+h2. setaspectratio
+
+*subroutine* **setaspectratio** (xaspect, yaspect)
+
+h3. Description
+
+Sets the aspect ratio for the current window.  The aspect ratio is used for ensuring shapes are displayed properly.  For example, it is used to ensure circles appear as such rather than elipses.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|xaspect|integer|The screen width of one pixel on the device|
+|yaspect|integer|The screen height of one pixel on the device|
+
+h2. getwindowheight
+
+*function* **getwindowheight** ( )
+
+h3. Description
+
+Returns the current height in pixels of the current window.
+
+h3. Return Value
+
+*integer*
+
+The height of the current window.
+
+h2. getwindowheight
+
+*function* **getwindowwidth** ( )
+
+h3. Description
+
+Returns the current width in pixels of the current window.
+
+h3. Return Value
+
+*integer*
+
+The width of the current window.
+
+h2. getwindowheight
+
+*function* **getwindowheight** ( )
+
+h3. Description
+
+Returns the current height in pixels of the current window.
+
+h3. Return Value
+
+*integer*
+
+The height of the current window.
+
+h2. getmaxheight
+
+*function* **getmaxheight** ( )
+
+h3. Description
+
+Returns the largest possible height of a window such that it will fit on screen.
+
+h3. Return Value
+
+*integer*
+
+The largest height of a window possible.
+
+h2. getmaxwidth
+
+*function* **getmaxwidth** ( )
+
+h3. Description
+
+Returns the largest possible width of a window such that it will fit on screen.
+
+h3. Return Value
+
+*integer*
+
+The largest width of a window possible.
+
+h2. getmaxx
+
+*function* **getmaxx** ( )
+
+h3. Description
+
+Returns the largest possible x position within the current window.
+
+h3. Return Value
+
+*integer*
+
+The largest horizontal position possible in the current window.
+
+h2. getmaxy
+
+*function* **getmaxy** ( )
+
+h3. Description
+
+Returns the largest possible y position within the current window.
+
+h3. Return Value
+
+*integer*
+
+The largest vertical position possible in the current window.
