@@ -28,7 +28,8 @@ implicit none
     !       more information.
     private :: c_initwindow, getdefaultpalette_c, getdrivername_c, &
                getfillpattern_c, getmodename_c, strlen, &
-               c_f_stringconvert, c_initgraph, c_closegraph
+               c_f_stringconvert, c_initgraph, c_closegraph, &
+               drawpoly_c
 
     interface
         subroutine arc(x, y, stangle, endangle, radius) bind(c)
@@ -51,11 +52,11 @@ implicit none
             integer(kind=c_int), value::x, y, radius
         end subroutine circle
         
-        subroutine drawpoly (numpoints, polypoints) bind(c)
-        use iso_c_binding, only: c_int
+        subroutine drawpoly_c (numpoints, polypoints) bind(c, name="drawpoly")
+        use iso_c_binding, only: c_int, c_ptr
             integer(kind=c_int), value::numpoints
-            integer(kind=c_int), dimension(numpoints)::polypoints
-        end subroutine drawpoly
+            integer(kind=c_int), dimension(*)::polypoints
+        end subroutine drawpoly_c
 
         subroutine ellipse (x, y, stangle, endangle, xradius, yradius) bind(c)
         use iso_c_binding, only: c_int
@@ -730,5 +731,20 @@ implicit none
         call getfillpattern_c(c_loc(pattern))
     
     end subroutine getfillpattern
+    
+    subroutine drawpoly(numpoints, points)
+    use iso_c_binding
+    implicit none
+    
+        integer(kind=c_int), intent(in)::numpoints
+        integer, intent(in), dimension(numpoints,2)::points
+        
+        integer(kind=c_int), dimension(numpoints*2), target::oned
+    
+        oned = reshape(transpose(points), (/ 2*numpoints /))
+
+        call drawpoly_c(numpoints, oned)
+
+    end subroutine drawpoly
 
 end module bgi

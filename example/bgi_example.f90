@@ -8,6 +8,8 @@ integer::midx, midy, i, ignore
 integer::w
 character(len=40)::drivername
 
+integer, dimension(4,2)::pp
+
     ! Initgraph will use the default driver at 640x480
     ! gdriver = DETECT
     ! call initgraph(gdriver, gmode, "")
@@ -31,6 +33,13 @@ character(len=40)::drivername
 
     ! Added for fun
     call arc(midx, midy, 0, 180, 150)
+    
+    pp = 0
+    pp(1,:) = (/ 5, 100 /)
+    pp(2,:) = (/ 55, 100 /)
+    pp(3,:) = (/ 55, 130 /)
+    pp(4,:) = (/ 5, 130 /)
+    call drawpoly(4, pp)
     
     do i = EMPTY_FILL, USER_FILL-1
 

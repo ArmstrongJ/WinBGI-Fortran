@@ -1,0 +1,84 @@
+h1. Graphics Shapes and Primitives
+
+The following subprograms provide the ability to draw shapes, lines, and other graphics primitives.
+
+h2. arc
+
+*subroutine* **arc** (x, y, stangle, endangle, radius)
+
+h3. Description
+
+Draws a circular arc centered at (*x*,*y*) in the current color.  The start angle, *stangle*, and end angle, *endangle*, are measured in degrees counterclockwise with 0 degrees at 3 o'clock.  
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal center of the arc|
+|y|integer|Vertical center of the arc|
+|stangle|integer|Start angle of the arc in degrees|
+|endangle|integer|End angle of the arc in degrees|
+|radius|integer|Radius of the circular arc|
+
+h2. bar
+
+*subroutine* **bar** (left, top, right, bottom)
+
+h3. Description
+
+Draws a rectangular, filled bar using the currently selected color and fill pattern.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|left|integer|Leftmost horizontal bound of the bar|
+|top|integer|Topmost vertical bound of the bar|
+|right|integer|Righttmost horizontal bound of the bar|
+|bottom|integer|Bottommost vertical bound of the bar|
+
+h2. bar3d
+
+*subroutine* **bar3d** (left, top, right, bottom, depth, topflag)
+
+h3. Description
+
+Draws a three-dimensional rectangular, filled bar using the currently selected color and fill pattern.  The bar is outlined using the current line color and style.  
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|left|integer|Leftmost horizontal bound of the bar|
+|top|integer|Topmost vertical bound of the bar|
+|right|integer|Righttmost horizontal bound of the bar|
+|bottom|integer|Bottommost vertical bound of the bar|
+|depth|integer|The third-dimension depth of the bar|
+|topflag|integer|One to draw a top on the bar, zero to leave empty|
+
+h2. circle
+
+*subroutine* **circle** (x, y, radius)
+
+h3. Description
+
+Draws a circle centered at (*x*,*y*) with the given radius using the current color
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal center of the circle|
+|y|integer|Vertical center of the circle|
+|radius|integer|Radius of the circle|
+
+h2. drawpoly
+
+*subroutine* **drawpoly** (numpoints, points)
+
+h3. Description
+
+Draws a polygon of *numpoints* points using the locations in *points*, horizontal positions in the first column, and the vertical position in the second column.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|numpoints|integer|The number of points in the polygon|
+|points|integer, dimension(*numpoints*, 2)|Points with horizontal in first column, vertical in second column|
+
