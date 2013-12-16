@@ -63,5 +63,14 @@ implicit none
         integer(kind=c_signed_char) :: size
         integer(kind=c_signed_char), dimension(MAXCOLORS + 1) :: colors
     end type palettetype
+    
+    type :: imagetype
+        ! Pointer to the data
+        type(c_ptr)::image_ptr
+        
+        integer::width
+        integer::height
+        
+    end type imagetype
 
 end module bgi_types

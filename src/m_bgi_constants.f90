@@ -76,4 +76,8 @@ implicit none
                       grNoInitGraph, grOk
     end enum
     
+    enum, bind(c) 
+        enumerator :: COPY_PUT, XOR_PUT, OR_PUT, AND_PUT, NOT_PUT
+    end enum
+    
 end module bgi_constants

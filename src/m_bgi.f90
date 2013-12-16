@@ -29,7 +29,7 @@ implicit none
     private :: c_initwindow, getdefaultpalette_c, getdrivername_c, &
                getfillpattern_c, getmodename_c, strlen, &
                c_f_stringconvert, c_initgraph, c_closegraph, &
-               drawpoly_c
+               drawpoly_c, malloc_c, free_c
 
     interface
         subroutine arc(x, y, stangle, endangle, radius) bind(c)
@@ -518,11 +518,35 @@ implicit none
             integer(kind=c_int), value::v
         end function converttorgb
         
+        function imagesize(left, top, right, bottom) bind(c)
+        use iso_c_binding, only: c_int
+            integer(kind=c_int)::imagesize
+            integer(kind=c_int), value::left, top, right, bottom
+        end function imagesize
+        
+        subroutine putimage(left, top, ptr, op) bind(c)
+        use iso_c_binding, only: c_int, c_ptr
+            integer(kind=c_int), value::left, top
+            type(c_ptr)::ptr
+            integer(kind=c_int), value::op
+        end subroutine putimage
+        
         function strlen(str) bind(c)
         use iso_c_binding, only: c_ptr, c_int
             integer(kind=c_int)::strlen
             type(c_ptr)::str
         end function strlen
+        
+        function malloc_c(memsize) bind(c, name="malloc")
+        use iso_c_binding, only: c_ptr, c_int
+            integer(kind=c_int), value::memsize
+            type(c_ptr)::malloc_c
+        end function malloc_c
+        
+        subroutine free_c(p) bind(c, name="free")
+        use iso_c_binding, only: c_ptr, c_int
+            type(c_ptr)::p
+        end subroutine free_c
         
     end interface
     
@@ -746,5 +770,56 @@ implicit none
         call drawpoly_c(numpoints, oned)
 
     end subroutine drawpoly
+    
+    subroutine allocateimage(img, width, height)
+    use bgi_types, only: imagetype
+    implicit none
+    
+        type(imagetype), intent(out)::img
+        integer::width, height
+        
+        integer::memsize
+        
+        memsize = imagesize(0, 0, width, height)
+        
+        img%width = width
+        img%height = height
+        img%image_ptr = malloc_c(memsize)
+    
+    end subroutine allocateimage
+    
+    subroutine freeimage(img)
+    use bgi_types, only: imagetype
+    implicit none
+    
+        type(imagetype), intent(inout)::img
+        img%width = 0
+        img%height = 0
+        call free_c(img%image_ptr)
+        
+    end subroutine freeimage
+    
+    subroutine copyimage(left, top, img)
+    use bgi_types, only: imagetype
+    implicit none
+        
+        integer, intent(in)::left, top
+        type(imagetype), intent(inout)::img
+        
+        call getimage(left, top, left+img%width, top+img%height, img%image_ptr)
+        
+    end subroutine copyimage
+
+    subroutine pasteimage(left, top, img, op)
+    use bgi_types, only: imagetype
+    implicit none
+        
+        integer, intent(in)::left, top
+        type(imagetype), intent(in)::img
+        integer, intent(in)::op
+        
+        call putimage(left, top, img%image_ptr, op)
+        
+    end subroutine 
 
 end module bgi
