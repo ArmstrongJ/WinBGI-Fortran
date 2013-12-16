@@ -2,6 +2,8 @@ h1. Graphics Shapes and Primitives
 
 The following subprograms provide the ability to draw shapes, lines, and other graphics primitives.
 
+One concept to understand in this section is the existence of a "current position" of the graphics cursor on the screen.  A handful of routines will use this in-memory screen coordinate for drawing.  The *moveto* subroutine can be used to set the position directly.  The graphics cursor, however, is never visible on the screen.
+
 h2. arc
 
 *subroutine* **arc** (x, y, stangle, endangle, radius)
@@ -81,4 +83,175 @@ h3. Parameters
 |Parameter|Type|Description|
 |numpoints|integer|The number of points in the polygon|
 |points|integer, dimension(*numpoints*, 2)|Points with horizontal in first column, vertical in second column|
+
+h2. ellipse
+
+*subroutine* **ellipse** (x, y, stangle, endangle, xradius, yradius)
+
+h3. Description
+
+Draws an ellipse centered at (*x*,*y*) with the given radius using the current color. The start angle, *stangle*, and end angle, *endangle*, are measured in degrees counterclockwise with 0 degrees at 3 o'clock. 
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal center of the ellipse|
+|y|integer|Vertical center of the ellipse|
+|stangle|integer|Start angle of the arc in degrees|
+|endangle|integer|End angle of the arc in degrees|
+|xradius|integer|Radius along the horizontal axis|
+|yradius|integer|Radius along the vertical axis|
+
+h2. fillellipse
+
+*subroutine* **fillellipse** (x, y, xradius, yradius)
+
+h3. Description
+
+Draws a filled ellipse centered at (*x*,*y*) with the given radius using the current color. 
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal center of the ellipse|
+|y|integer|Vertical center of the ellipse|
+|xradius|integer|Radius along the horizontal axis|
+|yradius|integer|Radius along the vertical axis|
+
+h2. fillpoly
+
+*subroutine* **fillpoly** (numpoints, points)
+
+h3. Description
+
+Draws a filled polygon of *numpoints* points using the locations in *points*, horizontal positions in the first column, and the vertical position in the second column.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|numpoints|integer|The number of points in the polygon|
+|points|integer, dimension(*numpoints*, 2)|Points with horizontal in first column, vertical in second column|
+
+h2. floodfill
+
+*subroutine* **floodfill** (x, y, border)
+
+h3. Description
+
+Fills in the screen starting at point (*x*,*y*) until the color *border* is encountered. 
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal point at which to start flood fill operation|
+|y|integer|Vertical point at which to start flood fill operation|
+|border|integer|Color at which flood fill is stopped|
+
+h2. line
+
+*subroutine* **line** (x1, y1, x2, y2)
+
+h3. Description
+
+Draws a line using the current color from point (*x1*,*y1*) to point (*x2*,*y2*). 
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x1|integer|Horizontal coordinate of the start point of the line|
+|y1|integer|Vertical coordinate of the start point of the line|
+|x2|integer|Horizontal coordinate of the end point of the line|
+|y2|integer|Vertical coordinate of the end point of the line|
+
+h2. linerel
+
+*subroutine* **linerel** (dx, dy)
+
+h3. Description
+
+Draws a line from the current position to a point that is distanced *dx* horizontally and *dy* vertically from the current position using the current color.  The current position is moved to this new offset after the drawing operation.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|dx|integer|Horizontal offset of the end point of the line|
+|dy|integer|Vertical offset of the end point of the line|
+
+h2. lineto
+
+*subroutine* **lineto** (x, y)
+
+h3. Description
+
+Draws a line from the current position to the point (*x*, *y*) using the current color.  The current position is moved to this new offset after the drawing operation.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal coordinate of the end point of the line|
+|y|integer|Vertical coordinate of the end point of the line|
+
+h2. moveto
+
+*subroutine* **moveto** (x, y)
+
+h3. Description
+
+Sets the current position to be used with subsequent relative graphics operations.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal coordinate of the current position|
+|y|integer|Vertical coordinate of the current position|
+
+h2. pieslice
+
+*subroutine* **pieslice** (x, y, stangle, endangle, radius)
+
+h3. Description
+
+Draws a filled circular arc centered at (*x*,*y*) in the current color, appearing in the shape of a pie slice.  The start angle, *stangle*, and end angle, *endangle*, are measured in degrees counterclockwise with 0 degrees at 3 o'clock.  
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal center of the arc|
+|y|integer|Vertical center of the arc|
+|stangle|integer|Start angle of the arc in degrees|
+|endangle|integer|End angle of the arc in degrees|
+|radius|integer|Radius of the circular arc|
+
+h2. putpixel
+
+*subroutine* **putpixel** (x, y, color)
+
+h3. Description
+
+Draws a single pixel at (*x*, *y*) using the color *color*.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal coordinate of the pixel|
+|y|integer|Vertical coordinate of the pixel|
+|color|integer|The color of the pixel|
+
+h2. sector
+
+*subroutine* **sector** (x, y, stangle, endangle, xradius, yradius)
+
+h3. Description
+
+Draws a filled elliptical shape, similar to a pie slice, centered at (*x*,*y*) with the given radius using the current color. The start angle, *stangle*, and end angle, *endangle*, are measured in degrees counterclockwise with 0 degrees at 3 o'clock. 
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|x|integer|Horizontal center of the sector|
+|y|integer|Vertical center of the sector|
+|stangle|integer|Start angle of the arc in degrees|
+|endangle|integer|End angle of the arc in degrees|
+|xradius|integer|Radius along the horizontal axis|
+|yradius|integer|Radius along the vertical axis|
 

@@ -58,11 +58,27 @@ implicit none
             integer(kind=c_int), dimension(*)::polypoints
         end subroutine drawpoly_c
 
+        subroutine fillpoly_c (numpoints, polypoints) bind(c, name="fillpoly")
+        use iso_c_binding, only: c_int, c_ptr
+            integer(kind=c_int), value::numpoints
+            integer(kind=c_int), dimension(*)::polypoints
+        end subroutine fillpoly_c
+
         subroutine ellipse (x, y, stangle, endangle, xradius, yradius) bind(c)
         use iso_c_binding, only: c_int
             integer(kind=c_int), value::x, y, stangle, endangle, xradius, yradius
         end subroutine ellipse
-               
+
+        subroutine fillellipse (x, y, xradius, yradius) bind(c)
+        use iso_c_binding, only: c_int
+            integer(kind=c_int), value::x, y, xradius, yradius
+        end subroutine ellipse
+            
+        subroutine floodfill (x, y, border) bind(c)
+        use iso_c_binding, only: c_int
+            integer(kind=c_int), value::x, y, border
+        end subroutine floodfill
+            
         subroutine line (x1, y1, x2, y2) bind(c)
         use iso_c_binding, only: c_int
             integer(kind=c_int), value::x1, y1, x2, y2
@@ -770,6 +786,21 @@ implicit none
         call drawpoly_c(numpoints, oned)
 
     end subroutine drawpoly
+    
+    subroutine fillpoly(numpoints, points)
+    use iso_c_binding
+    implicit none
+    
+        integer(kind=c_int), intent(in)::numpoints
+        integer, intent(in), dimension(numpoints,2)::points
+        
+        integer(kind=c_int), dimension(numpoints*2), target::oned
+    
+        oned = reshape(transpose(points), (/ 2*numpoints /))
+
+        call fillpoly_c(numpoints, oned)
+
+    end subroutine fillpoly
     
     subroutine allocateimage(img, width, height)
     use bgi_types, only: imagetype

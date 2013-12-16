@@ -8,3 +8,6 @@ h2. The Fortran Interface
 
 Much of the Fortran interface that this library implements is simply a thin wrapper around WinBGI's functions.  This library is packaged cleanly into a Fortran 90 module, named **bgi**, that can be *use*d in any Fortran program or subprogram unit.  The implementation of these functions should effectively conceal any of the C-like syntax, providing Fortran-friendly functions for everything.
 
+h2. Warnings and Notes
+
+The WinBGI library makes use of Microsoft's GDI+ drawing routines to perform all drawing operations.  This library comes with Windows, and it continues to be supported in modern versions of the operating system.  However, being a low-level library, the user must be careful not to perform unrealistic requests.  For example, if the user fails to initialize a radius variable when drawing a circle, the value may be some random, large quantity.  The GDI will attempt to draw this circle regardless of the size, and it can cause an apparent or actual lockup of the Windows graphical user interface while the operation is attempted.  Users should take care in determining what values are passed into the library.
