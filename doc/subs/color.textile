@@ -4,7 +4,7 @@ The following subprograms provide the ability to manage colors.  Unlike the orig
 
 h2. converttorgb
 
-*function* **converttorgb** (c)
+*function* **converttorgb** (col)
 
 h3. Description
 
@@ -13,7 +13,7 @@ Converts the indexed color to the corresponding Windows RGB value.
 h3. Parameters
 
 |Parameter|Type|Description|
-|c|integer|Index of the color of interest|
+|col|integer|Index of the color of interest|
 
 h3. Return Value
 
@@ -65,7 +65,7 @@ A pointer to the palettetype
 
 h2. getdisplaycolor
 
-*function* **getdisplaycolor** (c)
+*function* **getdisplaycolor** (col)
 
 h3. Description
 
@@ -74,7 +74,7 @@ Given the color specified, returns the color that would actually be used for dra
 h3. Parameters
 
 |Parameter|Type|Description|
-|c|integer|Index of the color of interest|
+|col|integer|Index of the color of interest|
 
 h3. Return Value
 
