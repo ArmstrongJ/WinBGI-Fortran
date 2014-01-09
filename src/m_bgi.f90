@@ -72,7 +72,7 @@ implicit none
         subroutine fillellipse (x, y, xradius, yradius) bind(c)
         use iso_c_binding, only: c_int
             integer(kind=c_int), value::x, y, xradius, yradius
-        end subroutine ellipse
+        end subroutine fillellipse
             
         subroutine floodfill (x, y, border) bind(c)
         use iso_c_binding, only: c_int
@@ -287,7 +287,7 @@ implicit none
         subroutine getimage (left, top, right, bottom, bitmap) bind(c)
         use iso_c_binding, only: c_int, c_ptr
             integer(kind=c_int), value::left, top, right, bottom
-            type(c_ptr)::bitmap
+            type(c_ptr), value::bitmap
         end subroutine getimage
         
         subroutine getlinesettings(lineinfo) bind(c)
@@ -543,7 +543,7 @@ implicit none
         subroutine putimage(left, top, ptr, op) bind(c)
         use iso_c_binding, only: c_int, c_ptr
             integer(kind=c_int), value::left, top
-            type(c_ptr)::ptr
+            type(c_ptr), value::ptr
             integer(kind=c_int), value::op
         end subroutine putimage
         
