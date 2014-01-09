@@ -1,0 +1,170 @@
+h1. Colors, Palettes, and Patterns
+
+The following subprograms provide the ability to manage colors.  Unlike the original BGI routines, WinBGI allows the specification of colors by red-green-blue specification in addition to the primary colors present in the original BGI interface.
+
+h2. converttorgb
+
+*function* **converttorgb** (c)
+
+h3. Description
+
+Converts the indexed color to the corresponding Windows RGB value.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|c|integer|Index of the color of interest|
+
+h3. Return Value
+
+**integer** 
+
+The RGB triplet as an integer
+
+h2. getbkcolor
+
+*function* **getbkcolor** ( )
+
+h3. Description
+
+Returns the current background color.  If the current background color was specified as an RGB value, this routine will return the appropriate integer representation of the RGB value.  If the current background color is an indexed color, the indexed color value will be returned.
+
+h3. Return Value
+
+**integer** 
+
+The current background color
+
+h2. getcolor
+
+*function* **getcolor** ( )
+
+h3. Description
+
+Returns the current drawing color.  If the current drawing color was specified as an RGB value, this routine will return the appropriate integer representation of the RGB value.  If the current drawing color is an indexed color, the indexed color value will be returned.
+
+h3. Return Value
+
+**integer** 
+
+The current foreground drawing color
+
+h2. getdefaultpalette
+
+*function* **getdefaultpalette** ( )
+
+h3. Description
+
+Returns a pointer to the default palette
+
+h3. Return Value
+
+**palettetype** 
+
+A pointer to the palettetype
+
+h2. getdisplaycolor
+
+*function* **getdisplaycolor** (c)
+
+h3. Description
+
+Given the color specified, returns the color that would actually be used for drawing on the current device.  Because not all colors are necessarily available on all devices, the display color may return the closest value.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|c|integer|Index of the color of interest|
+
+h3. Return Value
+
+**integer** 
+
+The color that would actually be used for drawing
+
+h2. getfillpattern
+
+*subroutine* **getfillpattern** (pattern)
+
+h3. Description
+
+Returns the current byte array representing the pattern used for fill operations.  The pattern array is a sequence of 8 characters, with each byte corresponding to 8 pixels in the pattern. Whenever a bit in a pattern byte is set to 1, the corresponding pixel will be plotted. 
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|pattern|character, dimension(8)|The array that receives the pattern|
+
+h2. getfillsettings
+
+*subroutine* **getfillsettings** (fillinfo)
+
+h3. Description
+
+Returns the current fill settings, which includes the pattern index and the current color.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|fillinfo|fillsettingstype|The current fill settings|
+
+h2. getlinesettings
+
+*subroutine* **getlinesettings** (lineinfo)
+
+h3. Description
+
+Returns the current line settings, which includes the style, pattern, and thickness.  The style will be one of the following:
+
+|SOLID_LINE|
+|DOTTED_LINE|
+|CENTER_LINE|
+|DASHED_LINE|
+|USERBIT_LINE|
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|lineinfo|linesettingstype|The current line settings|
+
+h2. getmaxcolor
+
+*function* **getmaxcolor** ()
+
+h3. Description
+
+Returns the maximum color index available.  In this implementation, this function will always return 15.  This value does not represent a restriction on the ability to specify RGB colors; it is provided only for compatibility reasons.
+
+h3. Return Value
+
+**integer** 
+
+The number 15
+
+h2. getpalette
+
+*subroutine* **getpalette** (palette)
+
+h3. Description
+
+Returns the current palette.  The size of the palette will always be 16 colors, and the individual colors will either be the index of the BGI color or -1 if an RGB color was specified.
+
+h3. Parameters
+
+|Parameter|Type|Description|
+|palette|palettetype|The current palette|
+
+h2. getpalettesize
+
+*function* **getpalettesize** ()
+
+h3. Description
+
+Returns the size of the palette.  For this implementation, the palette size will always be 16.  The number of colors, however, is not restricted to this value; RGB colors may also be used beyond this limit.
+
+h3. Return Value
+
+**integer** 
+
+The number 16
+
